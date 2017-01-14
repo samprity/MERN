@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>MERN-2</title>
+		<script src="https://unpkg.com/react@15.3.1/dist/react.min.js"></script>
+		<script src="https://unpkg.com/react-dom@15.3.1/dist/react-dom.min.js"></script>
+    	<script src="https://unpkg.com/babel-core@5.8.38/browser.min.js"></script>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		<style>
+			h1, h2, h3, h4, h5, h6, p {
+				margin: 10px;
+			}
+		</style>
+
+  </head>
+  <body>
+    <div id="example"></div>
+    <script type="text/babel">
+			// data store
+			const bands = [{
+				name: 'Chainsmokers',
+				genre: 'RnB',
+				id: 0,
+			}, {
+				name: 'Blackmill',
+				genre: 'ChillStep',
+				id: 1,
+			}, {
+				name: 'Slipknot',
+				genre: 'Metal',
+				id: 2,
+			}, {
+				name: 'Led Zep',
+				genre: 'Rock',
+				id: 3,
+			}];
+
+			
+			function Band(props) {
+
+				return (
+					<li className="list-group-item">
+						<h4>{props.name}</h4>
+						<p>{props.genre}</p>
+					</li>
+				);
+			}
+
+			function BandList(props) {
+
+				return (
+					<ul className="list-group"> 
+						{props.bands.map(Band)}
+					</ul>
+
+				);
+			}
+			function DeleteBand(props) { // 
+
+				const deleteBand = () => {
+					props.onDeleteBand({
+						id : props.bands
+					});
+				}
+
+				return (
+					<div style={{display:'flex'}}>
+						<button className="btn btn-primary" type="button" onClick={deleteBand}>
+							Delete Band
+						</button>
+					</div>
+				);
+			}
+			function CreateBand(props) { // 
+
+				const submit = () => {
+					const nameInput = document.querySelector('#name');
+					const genreInput = document.querySelector('#genre');
+
+					props.onAddBand({
+						name: nameInput.value,
+						genre: genreInput.value
+					});
+
+					nameInput.value = "";
+					genreInput.value = "";
+				}
+
+				return (
+					<div style={{display:'flex'}}>
+						<input id="name" className="form-control"
+							placeholder="Name Please!" />
+
+						<input id="genre" className="form-control"
+							placeholder="Genre Please!" />
+
+						<button className="btn btn-primary" type="button" onClick={submit}>
+							Add Band
+						</button>
+					</div>
+				);
+			}
+
+			class App extends React.Component {
+				componentWillMount() {
+					this.state = { bands };
+				}
+
+				/*
+				 * Add newBand to store (`this.state`) and re-render
+				 */
+				handleAddBand(newBand) {
+					// provide uniquely-identifying ID
+					newBand.id = this.state.bands.length;
+
+					// when setState is called, component will rerender
+					this.setState({
+						bands: this.state.bands.concat(newBand)
+					});
+				}
+				handleDeleteBand(id) {
+					console.log(id);
+					var index = bands.indexOf(id);
+					var newBands = bands;
+					newBands.splice(index, 1);
+					console.log(newBands);
+					// when setState is called, component will rerender
+					this.setState({
+						bands: newBands
+					});
+				}
+
+				render() {
+					return (
+						<div>
+							<BandList bands={this.state.bands}/>
+							<DeleteBand onDeleteBand={this.handleDeleteBand.bind(this)}/>
+							<CreateBand onAddBand={this.handleAddBand.bind(this)}/>
+						</div>
+					);
+				}
+			}
+
+      ReactDOM.render(
+				<App />,
+        document.getElementById('example')
+      );
+    </script>
+  </body>
+</html>
